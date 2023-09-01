@@ -9,7 +9,7 @@ gabumon_vida = 100
 gabumon_ataque = 18
 
 
-# Función para simular un ataqueG
+# Función para simular un ataque
 def ataque(pypet_atacante, pypet_objetivo):
     dano = random.randint(15, 25)
     pypet_objetivo["vida"] -= dano
