@@ -1,2 +1,3 @@
 Le falta el match a Diego | Solucionado
 Version 2.1 de la clase | Diego Osso
+Gonzalo WP | Problema del While que rompe | Solucionado *Estaba mal identado*

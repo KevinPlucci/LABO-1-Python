@@ -8,14 +8,9 @@ numero = int(input("Ingrese un número entero positivo: "))
 # Verificar si el número es primo
 if numero <= 1:
     print("El número no es primo")
+elif numero == 2:
+    print("El número es primo")  # 2 es primo
+elif numero % 2 == 0:
+    print("El número no es primo")  # Si es divisible por 2, no es primo
 else:
-    es_primo = True
-    for i in range(2, int(numero**0.5) + 1):
-        if numero % i == 0:
-            es_primo = False
-            break
-
-    if es_primo:
-        print("El número es primo")
-    else:
-        print("El número no es primo")
+    print("El número es primo")

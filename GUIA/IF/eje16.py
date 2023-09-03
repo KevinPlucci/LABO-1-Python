@@ -9,8 +9,10 @@ nombre = input("Ingresa tu nombre: ")
 # Solicitar al usuario que ingrese su edad
 edad = int(input("Ingresa tu edad: "))
 
-# Determinar si el usuario es un adolescente, un adulto o un adulto mayor
-if 13 <= edad <= 17:
+# Verificar si la edad es un valor negativo o menor que 13
+if edad < 13 or edad < 0:
+    print("Dato erróneo")
+elif 13 <= edad <= 17:
     print(f"{nombre}, eres adolescente")
 elif 18 <= edad <= 64:
     print(f"{nombre}, eres adulto")
