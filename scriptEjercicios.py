@@ -1,7 +1,7 @@
 import os
 
 # Especifica la cantidad de archivos que deseas crear
-num_archivos = 21
+num_archivos = 20
 
 # Obtiene el directorio actual
 directorio_actual = os.getcwd()
