@@ -33,8 +33,14 @@ def imprimir_dato(texto):
 def stark_imprimir_nombres_heroes(lista_personajes):
     if not lista_personajes:
         return -1
-    for heroe in lista_personajes:
-        imprimir_dato(obtener_nombre(heroe))
+    nombres = [obtener_nombre(heroe) for heroe in lista_personajes]
+    return nombres
+
+
+nombres_heroes = stark_imprimir_nombres_heroes(lista_personajes)
+if nombres_heroes:
+    for nombre in nombres_heroes:
+        imprimir_dato(nombre)
 
 
 def obtener_nombre_y_dato(heroe, key):
@@ -44,4 +50,7 @@ def obtener_nombre_y_dato(heroe, key):
 
 
 altura = "altura"
+
+for heroe in lista_personajes:
+    imprimir_dato(obtener_nombre_y_dato(heroe, altura))
 # obtener_nombre_y_dato(lista_personajes[0], altura)
