@@ -183,6 +183,3 @@ while True:
         break
     else:
         print("Opción no válida. Intente nuevamente.")
-
-
-
