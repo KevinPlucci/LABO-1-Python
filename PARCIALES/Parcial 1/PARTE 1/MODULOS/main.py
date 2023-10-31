@@ -1,9 +1,9 @@
 # main.py
-import re
-
-from equipo import Equipo
+import re  # Importar el módulo 're' para expresiones regulares
+from equipo import Equipo  # Importar la clase 'Equipo' desde el módulo 'equipo'
 
 if __name__ == "__main__":
+    # Crear una instancia de la clase 'Equipo' al cargar un archivo JSON con los datos del equipo
     equipo = Equipo("dream_team.json")
 
     while True:
@@ -24,8 +24,10 @@ if __name__ == "__main__":
             equipo.mostrar_jugadores()
             print("Lista de jugadores mostrada correctamente.")
             continue  # Salta a la siguiente iteración del bucle
+
         if opcion == "2":
             index = input("Ingresa el índice del jugador: ")
+
             # Validación usando una expresión regular para asegurarse de que el índice sea un número válido
             if re.match(r"^\d+$", index):
                 index = int(index)
@@ -36,8 +38,10 @@ if __name__ == "__main__":
                     print("Índice fuera de rango.")
             else:
                 print("Índice inválido. Debe ser un número entero positivo.")
+
         if opcion == "3":
             index = input("Ingresa el índice del jugador a guardar en CSV: ")
+
             try:
                 index = int(index)
                 if 0 <= index < len(equipo.jugadores):
@@ -49,6 +53,7 @@ if __name__ == "__main__":
                     print("Índice inválido.")
             except ValueError:
                 print("Índice inválido.")
+
         if opcion == "4":
             nombre = input("Ingresa el nombre completo del jugador a buscar: ")
 
@@ -61,8 +66,10 @@ if __name__ == "__main__":
                 print(
                     "Nombre inválido. Debe contener al menos un espacio y solo letras, espacios, guiones y apóstrofes."
                 )
+
         if opcion == "5":
             equipo.imprimir_promedio_puntos_equipo()
+
         elif opcion == "6":
             nombre = input(
                 "Ingresa el nombre del jugador a verificar en el Salón de la Fama: "
@@ -81,9 +88,12 @@ if __name__ == "__main__":
                 print(
                     "Nombre inválido. Debe contener solo letras, espacios, guiones y apóstrofes."
                 )
+
         elif opcion == "7":
             equipo.jugador_con_mas_rebotes()
+
         elif opcion == "8":
             break
+
         else:
             print("Opción inválida. Por favor, selecciona una opción válida.")

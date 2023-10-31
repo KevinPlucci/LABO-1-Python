@@ -8,25 +8,41 @@ from jugador import Jugador
 
 class Equipo:
     def __init__(self, json_file):
+        """
+        Inicializa una instancia de la clase Equipo y carga los datos de los jugadores desde un archivo JSON.
+
+        :param json_file: Ruta al archivo JSON que contiene los datos de los jugadores.
+        """
         self._jugadores = []
         try:
             self.cargar_jugadores_desde_json(json_file)
         except Exception as e:
             print(f"Error al cargar jugadores desde JSON: {str(e)}")
 
-    # Resto de métodos...
-
-    # Getter para obtener la lista de jugadores
     @property
     def jugadores(self):
+        """
+        Getter para obtener la lista de jugadores del equipo.
+
+        :return: La lista de jugadores del equipo.
+        """
         return self._jugadores
 
-    # Setter para modificar la lista de jugadores
     @jugadores.setter
     def jugadores(self, value):
+        """
+        Setter para modificar la lista de jugadores del equipo.
+
+        :param value: La nueva lista de jugadores que reemplazará a la lista existente.
+        """
         self._jugadores = value
 
     def cargar_jugadores_desde_json(self, json_file):
+        """
+        Carga los datos de los jugadores desde un archivo JSON y crea instancias de la clase Jugador para cada jugador.
+
+        :param json_file: Ruta al archivo JSON que contiene los datos de los jugadores.
+        """
         try:
             with open(json_file, "r") as file:
                 data = json.load(file)
@@ -40,19 +56,25 @@ class Equipo:
                         estadisticas,
                     )
                     self.jugadores.append(jugador)
-            print(
-                "Jugadores cargados correctamente."
-            )  # Agregar esta línea para depuración
+            print("Jugadores cargados correctamente.")
         except FileNotFoundError:
             print(f"Error: El archivo JSON '{json_file}' no se encuentra.")
         except json.JSONDecodeError as e:
             print(f"Error al decodificar JSON: {str(e)}")
 
     def mostrar_jugadores(self):
+        """
+        Muestra en la consola los nombres y posiciones de todos los jugadores del equipo.
+        """
         for jugador in self.jugadores:
             print(f"{jugador.nombre}-{jugador.posicion}")
 
     def mostrar_estadisticas_jugador(self, index):
+        """
+        Muestra en la consola las estadísticas de un jugador específico del equipo.
+
+        :param index: El índice del jugador en la lista de jugadores.
+        """
         jugador = self.jugadores[index]
         estadisticas = jugador.estadisticas
         print(f"Estadísticas de {jugador.nombre}:")
@@ -72,6 +94,12 @@ class Equipo:
         print(f"Porcentaje de tiros triples: {estadisticas.porcentaje_tiros_triples}")
 
     def guardar_estadisticas_csv(self, index, filename):
+        """
+        Guarda las estadísticas de un jugador específico en un archivo CSV.
+
+        :param index: El índice del jugador en la lista de jugadores.
+        :param filename: El nombre del archivo CSV donde se guardarán las estadísticas.
+        """
         try:
             jugador = self.jugadores[index]
             estadisticas = jugador.estadisticas
@@ -120,6 +148,11 @@ class Equipo:
             print(f"Error al guardar estadísticas en CSV: {str(e)}")
 
     def buscar_jugador_por_nombre(self, nombre):
+        """
+        Busca un jugador por nombre y muestra en la consola los logros del jugador si se encuentra.
+
+        :param nombre: El nombre del jugador que se está buscando.
+        """
         jugador_encontrado = False
         for jugador in self.jugadores:
             if re.search(nombre, jugador.nombre, re.IGNORECASE):
@@ -130,8 +163,14 @@ class Equipo:
         if not jugador_encontrado:
             print(f"No se encontró ningún jugador con el nombre '{nombre}'.")
 
+    @staticmethod
     def calcular_promedio_puntos_por_equipo_ordenado(equipo):
-        # Calcular el promedio de puntos por partido para cada jugador y almacenarlos en una lista
+        """
+        Calcula el promedio de puntos por partido para cada jugador del equipo y devuelve una lista ordenada por nombre de jugador.
+
+        :param equipo: La instancia del equipo.
+        :return: Una lista ordenada con los promedios de puntos por partido de cada jugador.
+        """
         promedios = []
         for jugador in equipo.jugadores:
             estadisticas = jugador.estadisticas
@@ -139,12 +178,13 @@ class Equipo:
                 promedio = estadisticas.puntos_totales / estadisticas.temporadas
                 promedios.append((jugador.nombre, promedio))
 
-        # Ordenar el equipo por nombre en orden ascendente
         equipo_ordenado = sorted(promedios, key=lambda x: x[0])
-
         return equipo_ordenado
 
     def imprimir_promedio_puntos_equipo(self):
+        """
+        Calcula y muestra en la consola el promedio de puntos por partido del equipo, ordenado alfabéticamente por nombre.
+        """
         equipo_ordenado = self.calcular_promedio_puntos_por_equipo_ordenado()
         if equipo_ordenado:
             print(
@@ -153,7 +193,6 @@ class Equipo:
             for nombre, promedio in equipo_ordenado:
                 print(f"{nombre}: {promedio:.2f}")
 
-            # Calcular el promedio del equipo
             promedio_equipo = sum(promedio for _, promedio in equipo_ordenado) / len(
                 equipo_ordenado
             )
@@ -165,6 +204,12 @@ class Equipo:
             print("No hay datos disponibles para calcular el promedio del equipo.")
 
     def es_miembro_hall_of_fame(self, nombre):
+        """
+        Comprueba si un jugador es miembro del Salón de la Fama del Baloncesto.
+
+        :param nombre: El nombre del jugador que se está comprobando.
+        :return: True si el jugador es miembro, False en caso contrario.
+        """
         for jugador in self.jugadores:
             if jugador.nombre.lower() == nombre.lower():
                 for logro in jugador.logros:
@@ -176,6 +221,9 @@ class Equipo:
         return False
 
     def jugador_con_mas_rebotes(self):
+        """
+        Encuentra al jugador con la mayor cantidad de rebotes totales en el equipo y muestra su nombre y la cantidad de rebotes en la consola.
+        """
         max_rebotes = 0
         max_rebotes_jugador = None
         for jugador in self.jugadores:
