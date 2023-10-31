@@ -163,29 +163,32 @@ class Equipo:
         if not jugador_encontrado:
             print(f"No se encontró ningún jugador con el nombre '{nombre}'.")
 
-    @staticmethod
-    def calcular_promedio_puntos_por_equipo_ordenado(equipo):
-        """
-        Calcula el promedio de puntos por partido para cada jugador del equipo y devuelve una lista ordenada por nombre de jugador.
+    # En tu archivo JSON, asegúrate de que tengas una clave "promedio_puntos_por_partido" para cada jugador, por ejemplo:
+    # "promedio_puntos_por_partido": 20.5
 
-        :param equipo: La instancia del equipo.
+    @staticmethod
+    def calcular_promedio_puntos_por_equipo_ordenado(jugadores):
+        """
+        Obtiene el promedio de puntos por partido para cada jugador del equipo y devuelve una lista ordenada por nombre de jugador.
+
+        :param jugadores: La lista de jugadores del equipo.
         :return: Una lista ordenada con los promedios de puntos por partido de cada jugador.
         """
         promedios = []
-        for jugador in equipo.jugadores:
-            estadisticas = jugador.estadisticas
-            if estadisticas.temporadas > 0:
-                promedio = estadisticas.puntos_totales / estadisticas.temporadas
-                promedios.append((jugador.nombre, promedio))
+        for jugador in jugadores:
+            promedio = jugador.estadisticas.promedio_puntos_por_partido
+            promedios.append((jugador.nombre, promedio))
 
         equipo_ordenado = sorted(promedios, key=lambda x: x[0])
         return equipo_ordenado
 
     def imprimir_promedio_puntos_equipo(self):
         """
-        Calcula y muestra en la consola el promedio de puntos por partido del equipo, ordenado alfabéticamente por nombre.
+        Muestra en la consola el promedio de puntos por partido del equipo, ordenado alfabéticamente por nombre.
         """
-        equipo_ordenado = self.calcular_promedio_puntos_por_equipo_ordenado()
+        equipo_ordenado = Equipo.calcular_promedio_puntos_por_equipo_ordenado(
+            self.jugadores
+        )
         if equipo_ordenado:
             print(
                 "Promedio de puntos por partido del equipo, ordenado por nombre de manera ascendente:"
