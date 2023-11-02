@@ -1,7 +1,6 @@
 # equipo.py
 import json
 import re
-import csv
 from estadisticas import Estadisticas
 from jugador import Jugador
 
@@ -94,53 +93,18 @@ class Equipo:
         print(f"Porcentaje de tiros triples: {estadisticas.porcentaje_tiros_triples}")
 
     def guardar_estadisticas_csv(self, index, filename):
-        """
-        Guarda las estadísticas de un jugador específico en un archivo CSV.
-
-        :param index: El índice del jugador en la lista de jugadores.
-        :param filename: El nombre del archivo CSV donde se guardarán las estadísticas.
-        """
         try:
             jugador = self.jugadores[index]
             estadisticas = jugador.estadisticas
             with open(f"{filename}.csv", mode="w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(
-                    [
-                        "nombre",
-                        "posicion",
-                        "temporadas",
-                        "puntos_totales",
-                        "promedio_puntos_por_partido",
-                        "rebotes_totales",
-                        "promedio_rebotes_por_partido",
-                        "asistencias_totales",
-                        "promedio_asistencias_por_partido",
-                        "robos_totales",
-                        "bloqueos_totales",
-                        "porcentaje_tiros_de_campo",
-                        "porcentaje_tiros_libres",
-                        "porcentaje_tiros_triples",
-                    ]
+                # Escribe las filas de datos manualmente
+                file.write(
+                    "nombre,posicion,temporadas,puntos_totales,promedio_puntos_por_partido,rebotes_totales,promedio_rebotes_por_partido,asistencias_totales,promedio_asistencias_por_partido,robos_totales,bloqueos_totales,porcentaje_tiros_de_campo,porcentaje_tiros_libres,porcentaje_tiros_triples\n"
                 )
-                writer.writerow(
-                    [
-                        jugador.nombre,
-                        jugador.posicion,
-                        estadisticas.temporadas,
-                        estadisticas.puntos_totales,
-                        estadisticas.promedio_puntos_por_partido,
-                        estadisticas.rebotes_totales,
-                        estadisticas.promedio_rebotes_por_partido,
-                        estadisticas.asistencias_totales,
-                        estadisticas.promedio_asistencias_por_partido,
-                        estadisticas.robos_totales,
-                        estadisticas.bloqueos_totales,
-                        estadisticas.porcentaje_tiros_de_campo,
-                        estadisticas.porcentaje_tiros_libres,
-                        estadisticas.porcentaje_tiros_triples,
-                    ]
+                file.write(
+                    f"{jugador.nombre},{jugador.posicion},{estadisticas.temporadas},{estadisticas.puntos_totales},{estadisticas.promedio_puntos_por_partido},{estadisticas.rebotes_totales},{estadisticas.promedio_rebotes_por_partido},{estadisticas.asistencias_totales},{estadisticas.promedio_asistencias_por_partido},{estadisticas.robos_totales},{estadisticas.bloqueos_totales},{estadisticas.porcentaje_tiros_de_campo},{estadisticas.porcentaje_tiros_libres},{estadisticas.porcentaje_tiros_triples}\n"
                 )
+
             print(f"Estadísticas de {jugador.nombre} guardadas en {filename}.csv")
         except (FileNotFoundError, IndexError):
             print("Error: Archivo o índice inválido.")
@@ -237,3 +201,63 @@ class Equipo:
             print(
                 f"{max_rebotes_jugador.nombre} tiene la mayor cantidad de rebotes totales ({max_rebotes})."
             )
+
+    def ordenar_jugadores_descendente(self):
+        """
+        Ordena la lista de jugadores de manera descendente por nombre.
+        """
+        self._jugadores.sort(key=lambda jugador: jugador.nombre, reverse=True)
+
+    def guardar_lista_jugadores_en_csv(self):
+        filename = "plucci.csv"
+        # Ordena la lista de jugadores por el número de temporadas de manera descendente
+        jugadores_ordenados = sorted(
+            self.jugadores,
+            key=lambda jugador: jugador.estadisticas.temporadas,
+            reverse=True,
+        )
+
+        try:
+            with open(filename, mode="w", newline="") as file:
+                # Escribe las filas de datos manualmente
+                file.write("nombre,posicion,temporadas\n")
+                for jugador in jugadores_ordenados:
+                    file.write(
+                        f"{jugador.nombre},{jugador.posicion},{jugador.estadisticas.temporadas}\n"
+                    )
+
+            print(f"Lista de jugadores ordenada y guardada en {filename}.")
+        except Exception as e:
+            print(f"Error al guardar la lista de jugadores en CSV: {str(e)}")
+
+    def guardar_lista_jugadores_en_json(self, filename):
+        """
+        Guarda la lista de jugadores en un archivo JSON con el nombre ingresado por el usuario.
+
+        :param filename: El nombre del archivo JSON (sin extensión).
+        """
+        # Agrega la extensión .json si no está presente
+        if not filename.endswith(".json"):
+            filename += ".json"
+
+        # Ordena la lista de jugadores por el número de temporadas de manera descendente
+        jugadores_ordenados = sorted(
+            self.jugadores,
+            key=lambda jugador: jugador.estadisticas.temporadas,
+            reverse=True,
+        )
+
+        data = {"jugadores": []}
+        for jugador in jugadores_ordenados:
+            data["jugadores"].append(
+                {
+                    "nombre": jugador.nombre,
+                    "posicion": jugador.posicion,
+                    "temporadas": jugador.estadisticas.temporadas,
+                }
+            )
+
+        with open(filename, "w") as file:
+            json.dump(data, file, indent=4)
+
+        print(f"Lista de jugadores ordenada y guardada en {filename}.")

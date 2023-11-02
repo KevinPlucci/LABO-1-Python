@@ -15,9 +15,14 @@ if __name__ == "__main__":
         print("5. Calcular promedio de puntos por partido del equipo")
         print("6. Verificar si un jugador es miembro del Salón de la Fama")
         print("7. Encontrar el jugador con más rebotes totales")
-        print("8. Salir")
+        print("8. Ordenar lista de jugadores descendente y mostrar")
+        print("9. Guardar lista ordenada en CSV con su apellido.csv")
+        print(
+            "10. Guardar lista ordenada en JSON y permitir al usuario ingresar el nombre del archivo (validar con regex)"
+        )
+        print("11. Salir")
 
-        opcion = input("Selecciona una opción (1-8): ")
+        opcion = input("Selecciona una opción (1-11): ")
 
         if opcion == "1":
             print("Mostrando la lista de todos los jugadores del Dream Team:")
@@ -92,7 +97,29 @@ if __name__ == "__main__":
         elif opcion == "7":
             equipo.jugador_con_mas_rebotes()
 
-        elif opcion == "8":
+        if opcion == "8":
+            # A) Ordenar la lista de jugadores de manera descendente y mostrarla
+            equipo.ordenar_jugadores_descendente()
+            print("Lista de jugadores ordenada de manera descendente:")
+            equipo.mostrar_jugadores()
+            continue
+
+        if opcion == "9":
+            equipo.guardar_lista_jugadores_en_csv()
+            continue
+
+        if opcion == "10":
+            # C) Guardar la lista ordenada en un archivo JSON y permitir al usuario ingresar el nombre del archivo
+            filename = input("Ingresa el nombre del archivo JSON (sin extensión): ")
+            if re.match(r"^[a-zA-Z0-9_]+$", filename):
+                equipo.guardar_lista_jugadores_en_json(f"{filename}.json")
+                print(f"Lista de jugadores guardada en {filename}.json.")
+            else:
+                print(
+                    "Nombre de archivo inválido. Debe contener solo letras, números y guiones bajos."
+                )
+            continue
+        elif opcion == "11":
             break
 
         else:
