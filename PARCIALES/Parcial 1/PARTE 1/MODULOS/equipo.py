@@ -1,6 +1,7 @@
 # equipo.py
 import json
 import re
+import sqlite3
 from estadisticas import Estadisticas
 from jugador import Jugador
 
@@ -315,3 +316,60 @@ class Equipo:
                 )
         except ValueError:
             print("Cantidad inválida. Debe ser un número entero.")
+
+    def guardar_lista_jugadores_en_sqlite(self):
+        # Conecta a la base de datos SQLite
+        conn = sqlite3.connect("jugadores.db")
+        cursor = conn.cursor()
+
+        # Crea una tabla si no existe
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS jugadores (
+                nombre TEXT,
+                posicion TEXT,
+                temporadas INTEGER
+            )
+        """
+        )
+
+        def quick_sort(arr):
+            if len(arr) <= 1:
+                return arr
+            else:
+                pivot = arr[0]
+                less = [
+                    x
+                    for x in arr[1:]
+                    if x.estadisticas.temporadas <= pivot.estadisticas.temporadas
+                ]
+                greater = [
+                    x
+                    for x in arr[1:]
+                    if x.estadisticas.temporadas > pivot.estadisticas.temporadas
+                ]
+                return quick_sort(greater) + [pivot] + quick_sort(less)
+
+        # Ordena la lista de jugadores con Quick Sort
+        jugadores_ordenados = quick_sort(self.jugadores)
+
+        try:
+            # Inserta los datos en la tabla
+            for jugador in jugadores_ordenados:
+                cursor.execute(
+                    """
+                    INSERT INTO jugadores (nombre, posicion, temporadas)
+                    VALUES (?, ?, ?)
+                """,
+                    (jugador.nombre, jugador.posicion, jugador.estadisticas.temporadas),
+                )
+
+            # Guarda los cambios en la base de datos
+            conn.commit()
+
+            print("Lista de jugadores ordenada y guardada en SQLite.")
+        except Exception as e:
+            print(f"Error al guardar la lista de jugadores en SQLite: {str(e)}")
+        finally:
+            # Cierra la conexión a la base de datos
+            conn.close()

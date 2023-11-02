@@ -107,6 +107,7 @@ if __name__ == "__main__":
             equipo.ordenar_jugadores_descendente()
             print("Lista de jugadores ordenada de manera descendente:")
             equipo.mostrar_jugadores()
+            equipo.guardar_lista_jugadores_en_sqlite()
             continue
 
         if opcion == "9":
