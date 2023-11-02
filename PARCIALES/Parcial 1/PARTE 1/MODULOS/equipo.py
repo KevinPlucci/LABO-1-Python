@@ -261,3 +261,57 @@ class Equipo:
             json.dump(data, file, indent=4)
 
         print(f"Lista de jugadores ordenada y guardada en {filename}.")
+
+    def ordenar_jugadores_por_robos_y_bloqueos(self):
+        self.jugadores.sort(
+            key=lambda jugador: jugador.estadisticas.robos_totales
+            + jugador.estadisticas.bloqueos_totales,
+            reverse=True,
+        )
+        print("Lista de jugadores ordenada por 'robos_totales + bloqueos_totales':")
+        for jugador in self.jugadores:
+            print(
+                f"{jugador.nombre}: {jugador.estadisticas.robos_totales + jugador.estadisticas.bloqueos_totales}"
+            )
+
+    def listar_jugadores_y_mostrar_porcentaje(self):
+        """
+        Lista todos los jugadores ordenados y muestra el porcentaje de valor sumado tomando como 100% el valor máximo.
+        """
+        max_valor_sumado = max(
+            self.jugadores,
+            key=lambda jugador: jugador.estadisticas.robos_totales
+            + jugador.estadisticas.bloqueos_totales,
+        )
+        max_valor_sumado = (
+            max_valor_sumado.estadisticas.robos_totales
+            + max_valor_sumado.estadisticas.bloqueos_totales
+        )
+
+        for jugador in self.jugadores:
+            valor_sumado = (
+                jugador.estadisticas.robos_totales
+                + jugador.estadisticas.bloqueos_totales
+            )
+            porcentaje = (valor_sumado / max_valor_sumado) * 100
+            print(f"{jugador.nombre}: {valor_sumado} ({porcentaje:.2f}%)")
+
+    def filtrar_y_mostrar_jugadores(self, cantidad):
+        """
+        Crea un filtro que permite ingresar una cantidad de jugadores y muestra esos jugadores ordenados por la suma de los dos campos.
+        """
+        try:
+            cantidad = int(cantidad)
+            jugadores_ordenados = sorted(
+                self.jugadores,
+                key=lambda jugador: jugador.estadisticas.robos_totales
+                + jugador.estadisticas.bloqueos_totales,
+                reverse=True,
+            )
+            for i in range(min(cantidad, len(jugadores_ordenados))):
+                jugador = jugadores_ordenados[i]
+                print(
+                    f"{jugador.nombre}: {jugador.estadisticas.robos_totales + jugador.estadisticas.bloqueos_totales}"
+                )
+        except ValueError:
+            print("Cantidad inválida. Debe ser un número entero.")

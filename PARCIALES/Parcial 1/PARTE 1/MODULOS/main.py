@@ -20,9 +20,14 @@ if __name__ == "__main__":
         print(
             "10. Guardar lista ordenada en JSON y permitir al usuario ingresar el nombre del archivo (validar con regex)"
         )
-        print("11. Salir")
+        print("11. Ordenar los jugadores por valor sumado")
+        print("12. Listar jugadores ordenados y mostrar el porcentaje de valor sumado")
+        print(
+            "13. Crear un filtro para mostrar jugadores por cantidad ordenados por suma de los dos campos"
+        )
+        print("14. Salir")
 
-        opcion = input("Selecciona una opción (1-11): ")
+        opcion = input("Selecciona una opción (1-14): ")
 
         if opcion == "1":
             print("Mostrando la lista de todos los jugadores del Dream Team:")
@@ -120,7 +125,13 @@ if __name__ == "__main__":
                 )
             continue
         elif opcion == "11":
+            equipo.ordenar_jugadores_por_robos_y_bloqueos()
+        elif opcion == "12":
+            equipo.listar_jugadores_y_mostrar_porcentaje()
+        elif opcion == "13":
+            cantidad = int(input("Ingresa la cantidad de jugadores a mostrar: "))
+            equipo.filtrar_y_mostrar_jugadores(cantidad)
+        elif opcion == "14":
             break
-
         else:
             print("Opción inválida. Por favor, selecciona una opción válida.")
