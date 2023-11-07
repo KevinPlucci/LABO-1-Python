@@ -447,7 +447,9 @@ class Equipo:
                 "ala-pivot",
                 "alero",
                 "base",
-            }  # Definimos las posiciones deseadas
+                "escolta",
+                "pivot",
+            }
 
             # Insertar las posiciones en la base de datos
             for posicion in posiciones:
