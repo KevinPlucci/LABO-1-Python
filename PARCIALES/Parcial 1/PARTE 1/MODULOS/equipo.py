@@ -94,6 +94,17 @@ class Equipo:
         print(f"Porcentaje de tiros triples: {estadisticas.porcentaje_tiros_triples}")
 
     def guardar_estadisticas_csv(self, index, filename):
+        """
+        La función `guardar_estadisticas_csv` guarda las estadísticas de los jugadores en un archivo CSV.
+
+        :param index: El parámetro `index` es el índice del jugador cuyas estadísticas desea guardar en el
+        archivo CSV. Se utiliza para acceder a las estadísticas del jugador desde la lista de
+        `self.jugadores`
+        :param filename: El parámetro `filename` es una cadena que representa el nombre del archivo donde se
+        guardarán las estadísticas. Debe proporcionarse sin la extensión del archivo. Por ejemplo, si desea
+        guardar las estadísticas en un archivo llamado "player_stats.csv", deberá pasar "player_stats" como
+        valor
+        """
         try:
             jugador = self.jugadores[index]
             estadisticas = jugador.estadisticas
@@ -219,6 +230,10 @@ class Equipo:
         self._jugadores.sort(key=lambda jugador: jugador.nombre, reverse=True)
 
     def guardar_lista_jugadores_en_csv(self):
+        """
+        La función `guardar_lista_jugadores_en_csv` ordena una lista de jugadores usando Quicksort y la
+        guarda en un archivo CSV.
+        """
         filename = "plucci.csv"
 
         def quicksort(arr):
@@ -305,6 +320,10 @@ class Equipo:
         print(f"Lista de jugadores ordenada y guardada en {filename}.")
 
     def ordenar_jugadores_por_robos_y_bloqueos(self):
+        """
+        La función ordena una lista de jugadores según su total de robos y bloqueos e imprime la lista
+        ordenada.
+        """
         self.jugadores.sort(
             key=lambda jugador: jugador.estadisticas.robos_totales
             + jugador.estadisticas.bloqueos_totales,
@@ -380,6 +399,10 @@ class Equipo:
             print("Cantidad inválida. Debe ser un número entero.")
 
     def guardar_lista_jugadores_en_sqlite(self):
+        """
+        La función `guardar_lista_jugadores_en_sqlite` guarda una lista de jugadores en una base de datos
+        SQLite después de ordenarlos usando el algoritmo Quick Sort.
+        """
         # Conecta a la base de datos SQLite
         conn = sqlite3.connect("jugadores.db")
         cursor = conn.cursor()
@@ -437,6 +460,10 @@ class Equipo:
             conn.close()
 
     def guardar_lista_posiciones_en_sqlite(self):
+        """
+        La función "save_list_of_positions_in_sqlite" guarda una lista de posiciones en una base de datos
+        SQLite.
+        """
         try:
             conn = sqlite3.connect("posiciones.db")
             cursor = conn.cursor()
