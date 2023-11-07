@@ -134,17 +134,26 @@ class Equipo:
     @staticmethod
     def calcular_promedio_puntos_por_equipo_ordenado(jugadores):
         """
-        Obtiene el promedio de puntos por partido para cada jugador del equipo y devuelve una lista ordenada por nombre de jugador.
+        Obtiene el promedio de puntos por partido para cada jugador del equipo y devuelve una lista ordenada por nombre de jugador utilizando el algoritmo Quick Sort.
 
         :param jugadores: La lista de jugadores del equipo.
         :return: Una lista ordenada con los promedios de puntos por partido de cada jugador.
         """
-        promedios = []
-        for jugador in jugadores:
-            promedio = jugador.estadisticas.promedio_puntos_por_partido
-            promedios.append((jugador.nombre, promedio))
 
-        equipo_ordenado = sorted(promedios, key=lambda x: x[0])
+        def quicksort(arr):
+            if len(arr) <= 1:
+                return arr
+            else:
+                pivote = arr[0]
+                menores = [x for x in arr[1:] if x[0] < pivote[0]]
+                mayores = [x for x in arr[1:] if x[0] >= pivote[0]]
+                return quicksort(menores) + [pivote] + quicksort(mayores)
+
+        promedios = [
+            (jugador.nombre, jugador.estadisticas.promedio_puntos_por_partido)
+            for jugador in jugadores
+        ]
+        equipo_ordenado = quicksort(promedios)
         return equipo_ordenado
 
     def imprimir_promedio_puntos_equipo(self):
@@ -211,12 +220,26 @@ class Equipo:
 
     def guardar_lista_jugadores_en_csv(self):
         filename = "plucci.csv"
-        # Ordena la lista de jugadores por el número de temporadas de manera descendente
-        jugadores_ordenados = sorted(
-            self.jugadores,
-            key=lambda jugador: jugador.estadisticas.temporadas,
-            reverse=True,
-        )
+
+        def quicksort(arr):
+            if len(arr) <= 1:
+                return arr
+            else:
+                pivot = arr[0]
+                lesser = [
+                    x
+                    for x in arr[1:]
+                    if x.estadisticas.temporadas <= pivot.estadisticas.temporadas
+                ]
+                greater = [
+                    x
+                    for x in arr[1:]
+                    if x.estadisticas.temporadas > pivot.estadisticas.temporadas
+                ]
+                return quicksort(greater) + [pivot] + quicksort(lesser)
+
+        # Ordena la lista de jugadores utilizando Quicksort
+        jugadores_ordenados = quicksort(self.jugadores)
 
         try:
             with open(filename, mode="w", newline="") as file:
@@ -241,12 +264,30 @@ class Equipo:
         if not filename.endswith(".json"):
             filename += ".json"
 
-        # Ordena la lista de jugadores por el número de temporadas de manera descendente
-        jugadores_ordenados = sorted(
-            self.jugadores,
-            key=lambda jugador: jugador.estadisticas.temporadas,
-            reverse=True,
-        )
+        def quick_sort(arr):
+            if len(arr) <= 1:
+                return arr
+
+            pivot = arr[len(arr) // 2]
+            left = [
+                x
+                for x in arr
+                if x.estadisticas.temporadas > pivot.estadisticas.temporadas
+            ]
+            middle = [
+                x
+                for x in arr
+                if x.estadisticas.temporadas == pivot.estadisticas.temporadas
+            ]
+            right = [
+                x
+                for x in arr
+                if x.estadisticas.temporadas < pivot.estadisticas.temporadas
+            ]
+
+            return quick_sort(left) + middle + quick_sort(right)
+
+        jugadores_ordenados = quick_sort(self.jugadores)
 
         data = {"jugadores": []}
         for jugador in jugadores_ordenados:
@@ -301,14 +342,35 @@ class Equipo:
         """
         Crea un filtro que permite ingresar una cantidad de jugadores y muestra esos jugadores ordenados por la suma de los dos campos.
         """
+
+        def quicksort(arr):
+            if len(arr) <= 1:
+                return arr
+            else:
+                pivot = arr[0]
+                less = [
+                    x
+                    for x in arr[1:]
+                    if (x.estadisticas.robos_totales + x.estadisticas.bloqueos_totales)
+                    <= (
+                        pivot.estadisticas.robos_totales
+                        + pivot.estadisticas.bloqueos_totales
+                    )
+                ]
+                greater = [
+                    x
+                    for x in arr[1:]
+                    if (x.estadisticas.robos_totales + x.estadisticas.bloqueos_totales)
+                    > (
+                        pivot.estadisticas.robos_totales
+                        + pivot.estadisticas.bloqueos_totales
+                    )
+                ]
+                return quicksort(greater) + [pivot] + quicksort(less)
+
         try:
             cantidad = int(cantidad)
-            jugadores_ordenados = sorted(
-                self.jugadores,
-                key=lambda jugador: jugador.estadisticas.robos_totales
-                + jugador.estadisticas.bloqueos_totales,
-                reverse=True,
-            )
+            jugadores_ordenados = quicksort(self.jugadores)
             for i in range(min(cantidad, len(jugadores_ordenados))):
                 jugador = jugadores_ordenados[i]
                 print(
@@ -372,4 +434,28 @@ class Equipo:
             print(f"Error al guardar la lista de jugadores en SQLite: {str(e)}")
         finally:
             # Cierra la conexión a la base de datos
+            conn.close()
+
+    def guardar_lista_posiciones_en_sqlite(self):
+        try:
+            conn = sqlite3.connect("posiciones.db")
+            cursor = conn.cursor()
+
+            cursor.execute("CREATE TABLE IF NOT EXISTS posiciones (posicion TEXT)")
+
+            posiciones = {
+                "ala-pivot",
+                "alero",
+                "base",
+            }  # Definimos las posiciones deseadas
+
+            # Insertar las posiciones en la base de datos
+            for posicion in posiciones:
+                cursor.execute("INSERT INTO posiciones VALUES (?)", (posicion,))
+
+            conn.commit()
+            print("Posiciones guardadas en SQLite.")
+        except sqlite3.Error as e:
+            print("Error al guardar las posiciones en SQLite:", e)
+        finally:
             conn.close()

@@ -25,9 +25,12 @@ if __name__ == "__main__":
         print(
             "13. Crear un filtro para mostrar jugadores por cantidad ordenados por suma de los dos campos"
         )
-        print("14. Salir")
+        print(
+            "14. Mostrar las posiciones y guardarlas en SQLite(Base de datos con sus posiciones)"
+        )
+        print("15. Salir")
 
-        opcion = input("Selecciona una opción (1-14): ")
+        opcion = input("Selecciona una opción (1-15): ")
 
         if opcion == "1":
             print("Mostrando la lista de todos los jugadores del Dream Team:")
@@ -35,7 +38,7 @@ if __name__ == "__main__":
             print("Lista de jugadores mostrada correctamente.")
             continue  # Salta a la siguiente iteración del bucle
 
-        if opcion == "2":
+        elif opcion == "2":
             index = input("Ingresa el índice del jugador: ")
 
             # Validación usando una expresión regular para asegurarse de que el índice sea un número válido
@@ -49,7 +52,7 @@ if __name__ == "__main__":
             else:
                 print("Índice inválido. Debe ser un número entero positivo.")
 
-        if opcion == "3":
+        elif opcion == "3":
             index = input("Ingresa el índice del jugador a guardar en CSV: ")
 
             try:
@@ -64,7 +67,7 @@ if __name__ == "__main__":
             except ValueError:
                 print("Índice inválido.")
 
-        if opcion == "4":
+        elif opcion == "4":
             nombre = input("Ingresa el nombre completo del jugador a buscar: ")
 
             # Validación usando una expresión regular
@@ -77,7 +80,7 @@ if __name__ == "__main__":
                     "Nombre inválido. Debe contener al menos un espacio y solo letras, espacios, guiones y apóstrofes."
                 )
 
-        if opcion == "5":
+        elif opcion == "5":
             equipo.imprimir_promedio_puntos_equipo()
 
         elif opcion == "6":
@@ -102,7 +105,7 @@ if __name__ == "__main__":
         elif opcion == "7":
             equipo.jugador_con_mas_rebotes()
 
-        if opcion == "8":
+        elif opcion == "8":
             # A) Ordenar la lista de jugadores de manera descendente y mostrarla
             equipo.ordenar_jugadores_descendente()
             print("Lista de jugadores ordenada de manera descendente:")
@@ -110,11 +113,11 @@ if __name__ == "__main__":
             equipo.guardar_lista_jugadores_en_sqlite()
             continue
 
-        if opcion == "9":
+        elif opcion == "9":
             equipo.guardar_lista_jugadores_en_csv()
             continue
 
-        if opcion == "10":
+        elif opcion == "10":
             # C) Guardar la lista ordenada en un archivo JSON y permitir al usuario ingresar el nombre del archivo
             filename = input("Ingresa el nombre del archivo JSON (sin extensión): ")
             if re.match(r"^[a-zA-Z0-9_]+$", filename):
@@ -133,6 +136,10 @@ if __name__ == "__main__":
             cantidad = int(input("Ingresa la cantidad de jugadores a mostrar: "))
             equipo.filtrar_y_mostrar_jugadores(cantidad)
         elif opcion == "14":
+            equipo.guardar_lista_posiciones_en_sqlite()
+            print("Posiciones guardadas en SQLite.")
+            continue
+        elif opcion == "15":
             break
         else:
             print("Opción inválida. Por favor, selecciona una opción válida.")

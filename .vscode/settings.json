@@ -5,5 +5,10 @@
     "python.formatting.provider": "none",
     "python.analysis.extraPaths": [
         "./EJERCICIOS INTEGRADORES/STARK/DATA"
-    ]
+    ],
+    "docwriter.progress.trackClasses": true,
+    "docwriter.progress.trackTypes": true,
+    "docwriter.language": "Spanish",
+    "docwriter.progress.trackFunctions": true,
+    "docwriter.progress.trackMethods": true
 }
