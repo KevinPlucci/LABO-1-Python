@@ -7,11 +7,10 @@ from models.player.main_player import (
 
 
 class Enemigo:
-    def __init__(self, coord_x, coord_y, speed=5):
+    def __init__(self, coord_x, coord_y, speed=5, gravity=16):
         self.__move_x = coord_x
         self.__move_y = coord_y
         self.__speed = speed
-        self.__speed_y = 0
         # Utilizar las mismas imágenes del jugador para el enemigo
         self.__enemy_animation = sf.get_surface_from_spritesheet(
             "./assets/img/player/iddle/player_idle.png", 5, 1
@@ -20,6 +19,7 @@ class Enemigo:
         self.__enemy_img = self.__enemy_animation[self.__initial_frame]
         self.__rect = self.__enemy_img.get_rect()
         self.__is_looking_right = True
+        self.__gravity = gravity
 
     def __set_x_animations_preset(self):
         self.__rect.x -= self.__speed
@@ -44,12 +44,10 @@ class Enemigo:
         if self.__rect.left < 0 or self.__rect.right > ANCHO_VENTANA:
             # Invertir la dirección del movimiento
             self.__speed = -self.__speed
+        if self.__rect.y < 300:
+            self.__rect.y += self.__gravity
 
         # Aplicar movimiento vertical (si es necesario)
-        self.__rect.y += self.__speed_y
-        if self.__rect.top < 0 or self.__rect.bottom > ALTO_VENTANA:
-            # Invertir la dirección vertical del movimiento
-            self.__speed_y = -self.__speed_y
 
     def do_animation(self):
         self.__initial_frame = (self.__initial_frame + 1) % len(self.__enemy_animation)
