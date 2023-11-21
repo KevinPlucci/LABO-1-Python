@@ -3,39 +3,31 @@ import sys
 import random
 
 
-
-
 class Crosshair(pygame.sprite.Sprite):
     def __init__(self, picture_path):
         super().__init__()
-        # Carga la imagen de la mira desde un archivo
         self.image = pygame.image.load(picture_path)
-        self.rect = self.image.get_rect()  # Obtiene el rectángulo que rodea la imagen
-        # Carga el sonido de disparo desde un archivo
-        self.gunshot = pygame.mixer.Sound('shoot.mp3')
+        self.rect = self.image.get_rect()
+        self.gunshot = pygame.mixer.Sound("shoot.mp3")
 
     def shoot(self):
-        self.gunshot.play()  # Reproduce el sonido de disparo
-        # Elimina los objetivos que se tocan
-        pygame.sprite.spritecollide(crosshair, target_group, True)
+        self.gunshot.play()
+        # Elimina los objetivos que se tocan y registra el blanco acertado
+        targets_hit = pygame.sprite.spritecollide(self, target_group, True)
+        return sum(target.score for target in targets_hit)
 
     def update(self):
-        # Actualiza la posición de la mira para seguir el cursor del mouse
         self.rect.center = pygame.mouse.get_pos()
 
 
-
-
 class Target(pygame.sprite.Sprite):
-    def __init__(self, picture_path, pos_x, pos_y):
+    def __init__(self, picture_path, pos_x, pos_y, size, score):
         super().__init__()
-        # Carga la imagen del objetivo desde un archivo
         self.image = pygame.image.load(picture_path)
-        self.rect = self.image.get_rect()  # Obtiene el rectángulo que rodea la imagen
-        # Establece la posición inicial del objetivo
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect()
         self.rect.center = [pos_x, pos_y]
-
-
+        self.score = score
 
 
 # Configuración general del juego
@@ -48,36 +40,63 @@ screen_height = 800
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Fondo del juego
-# Carga la imagen de fondo desde un archivo
-background = pygame.image.load('BG.png')
-pygame.mouse.set_visible(False)  # Oculta el cursor del mouse
+background = pygame.image.load("BG.png")
+pygame.mouse.set_visible(False)
 
 # Mira del jugador
-crosshair = Crosshair('crosshair.png')  # Crea una instancia de la mira
+crosshair = Crosshair("crosshair.png")
 crosshair_group = pygame.sprite.Group()
-crosshair_group.add(crosshair)  # Agrega la mira al grupo
+crosshair_group.add(crosshair)
 
 # Objetivos
 target_group = pygame.sprite.Group()
-for target in range(10):
-    new_target = Target('target.png', random.randrange(
-        0, screen_width), random.randrange(0, screen_height))
-    target_group.add(new_target)  # Agrega objetivos al grupo
+for _ in range(10):
+    size = (random.randint(50, 100), random.randint(50, 100))
+    score = random.randint(1, 10)
+    new_target = Target(
+        "target.png",
+        random.randrange(0, screen_width),
+        random.randrange(0, screen_height),
+        size,
+        score,
+    )
+    target_group.add(new_target)
+
+# Tiempo del juego
+start_time = pygame.time.get_ticks()
+game_duration = 30000
+
+# Puntos totales
+total_points = 0
 
 # Bucle principal del juego
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()  # Sale del juego si se cierra la ventana
+            pygame.quit()
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            crosshair.shoot()  # Llama al método shoot() cuando se hace clic
+            points = crosshair.shoot()
+            total_points += points
 
-    pygame.display.flip()  # Actualiza la pantalla
-    screen.blit(background, (0, 0))  # Dibuja el fondo en la pantalla
+    pygame.display.flip()
+    screen.blit(background, (0, 0))
 
-    target_group.draw(screen)  # Dibuja los objetivos en la pantalla
-    crosshair_group.draw(screen)  # Dibuja la mira en la pantalla
+    target_group.draw(screen)
+    crosshair_group.draw(screen)
+    crosshair_group.update()
 
-    crosshair_group.update()  # Actualiza la posición de la mira
-    clock.tick(60)  # Controla la velocidad del juego a 60 cuadros por segundo
+    elapsed_time = pygame.time.get_ticks() - start_time
+    remaining_time = max(0, (game_duration - elapsed_time) // 1000)
+    font = pygame.font.Font(None, 36)
+    timer_text = font.render(f"Time: {remaining_time} seconds", True, (255, 255, 255))
+    screen.blit(timer_text, (10, 10))
+
+    points_text = font.render(f"Points: {total_points}", True, (255, 255, 255))
+    screen.blit(points_text, (10, 50))
+
+    if elapsed_time >= game_duration:
+        pygame.quit()
+        sys.exit()
+
+    clock.tick(60)
